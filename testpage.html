@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>cursor test page</title>
+<style>
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid black;
+    padding: 0px;
+    text-align: center;
+}
+</style>
+</head>
+<body>
+<table>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: alias;">alias</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: all-scroll;">all-scroll</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: auto;">auto</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: cell;">cell</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: context-menu;">context-menu</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: col-resize;">col-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: copy;">copy</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: crosshair;">crosshair</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: default;">default</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: e-resize;">e-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: ew-resize;">ew-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: grab;">grab</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: grabbing;">grabbing</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: help;">help</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: move;">move</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: n-resize;">n-resize</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: ne-resize;">ne-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: nesw-resize;">nesw-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: ns-resize;">ns-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: nw-resize;">nw-resize</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: nwse-resize;">nwse-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: no-drop;">no-drop</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: none;">none</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: not-allowed;">not-allowed</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: pointer;">pointer</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: progress;">progress</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: row-resize;">row-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: s-resize;">s-resize</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: se-resize;">se-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: sw-resize;">sw-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: text;">text</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: URL;">URL</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: vertical-text;">vertical-text</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: w-resize;">w-resize</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: wait;">wait</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: zoom-in;">zoom-in</td>
+</tr>
+<tr>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: zoom-out;">zoom-out</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: initial;">initial</td>
+<td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: inherit;">inherit</td>
+</tr>
+</table>
+<img id="the_fakeptr" style="position: absolute;" src="out/24px/left_ptr.png">
+</table>
+</body>
+<script>
+
+var the_ptr = null;
+
+function getStyle(el, styleProp) {
+  var value, defaultView = (el.ownerDocument || document).defaultView;
+  // W3C standard way:
+  if (defaultView && defaultView.getComputedStyle) {
+    // sanitize property name to css notation
+    // (hypen separated words eg. font-Size)
+    styleProp = styleProp.replace(/([A-Z])/g, "-$1").toLowerCase();
+    return defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
+  } else if (el.currentStyle) { // IE
+    // sanitize property name to camelCase
+    styleProp = styleProp.replace(/\-(\w)/g, function(str, letter) {
+      return letter.toUpperCase();
+    });
+    value = el.currentStyle[styleProp];
+    // convert other units to pixels on IE
+    if (/^\d+(em|pt|%|ex)?$/i.test(value)) { 
+      return (function(value) {
+        var oldLeft = el.style.left, oldRsLeft = el.runtimeStyle.left;
+        el.runtimeStyle.left = el.currentStyle.left;
+        el.style.left = value || 0;
+        value = el.style.pixelLeft + "px";
+        el.style.left = oldLeft;
+        el.runtimeStyle.left = oldRsLeft;
+        return value;
+      })(value);
+    }
+    return value;
+  }
+}
+
+
+document.onmousemove = getMouseXY;
+// Temporary variables to hold mouse x-y pos.s
+var tempX = 0
+var tempY = 0
+
+var IE = false;
+// Main function to retrieve mouse x-y pos.s
+
+function getMouseXY(e) {
+  if (IE) { // grab the x-y pos.s if browser is IE
+    tempX = event.clientX + document.body.scrollLeft
+    tempY = event.clientY + document.body.scrollTop
+  } else {  // grab the x-y pos.s if browser is NS
+    tempX = e.pageX
+    tempY = e.pageY
+  }  
+  // catch possible negative values in NS4
+  if (tempX < 0){tempX = 0}
+  if (tempY < 0){tempY = 0}  
+  // show the position values in the form named Show
+  // in the text fields named MouseX and MouseY
+
+  the_ptr.style.left = tempX + 16 + "px";
+  the_ptr.style.top = tempY + 16 + "px";
+
+  return true
+}
+
+function cursor_log(){
+    var currentCursor = getStyle(this, 'cursor');
+    console.log( currentCursor );
+}
+
+var el = document.getElementsByTagName("*");
+
+for (var i = 0 ; i < el.length ; i++) {
+    el[i].onmouseenter = cursor_log;
+}
+
+window.onload = function () {
+    the_ptr = document.getElementById("the_fakeptr");
+}
+</script>
+</html>
