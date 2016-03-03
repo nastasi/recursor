@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>cursor test page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style>
 
 table {
@@ -82,6 +83,7 @@ td {
 <script>
 
 var the_ptr = null;
+var cursor_cur = "";
 
 function getStyle(el, styleProp) {
   var value, defaultView = (el.ownerDocument || document).defaultView;
@@ -136,25 +138,67 @@ function getMouseXY(e) {
   // show the position values in the form named Show
   // in the text fields named MouseX and MouseY
 
-  the_ptr.style.left = tempX + 16 + "px";
-  the_ptr.style.top = tempY + 16 + "px";
-
+  the_ptr.style.left = tempX + 20 + "px";
+  the_ptr.style.top = tempY + "px";
   return true
 }
 
-function cursor_log(){
-    var currentCursor = getStyle(this, 'cursor');
-    console.log( currentCursor );
-}
+var cursors = { "cell": { file: "out/24px/plus.png",   dx: 0, dy: 0 },
+                "wait": { file: "out/24px/watch.png",  dx: 0, dy: 0 },
+                "not-allowed": { file: "out/24px/crossed_circle.png",  dx: 0, dy: 0 },
+                "text": { file: "out/24px/xterm.png",  dx: 0, dy: 0 },
+                "crosshair": { file: "out/24px/crosshair.png",  dx: 0, dy: 0 },
+                "wait": { file: "out/24px/watch.png",  dx: 0, dy: 0 },
+                "no-drop": { file: "out/24px/circle.png",  dx: 0, dy: 0 },
+                "none": { file: "out/24px/none.png",  dx: 0, dy: 0 },
+                "copy": { file: "out/24px/copy.png",  dx: 0, dy: 0 },
+                "default": { file: "out/24px/left_ptr.png",  dx: 0, dy: 0 },
+                "grabbing": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
+                "all-scroll": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
+                "move": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
+                "pointer": { file: "out/24px/hand2.png",  dx: 0, dy: 0 },
+                "help": { file: "out/24px/question_arrow.png",  dx: 0, dy: 0 },
+                "s-resize": { file: "out/24px/bottom_side.png",  dx: 0, dy: 0 },
+                "nw-resize": { file: "out/24px/top_left_corner.png",  dx: 0, dy: 0 },
+                "n-resize": { file: "out/24px/top_side.png",  dx: 0, dy: 0 },
+                "ns-resize": { file: "out/24px/sb_v_double_arrow.png",  dx: 0, dy: 0 },
+                "row-resize": { file: "out/24px/sb_v_double_arrow.png",  dx: 0, dy: 0 },
+                "ew-resize": { file: "out/24px/sb_h_double_arrow.png",  dx: 0, dy: 0 },
+                "col-resize": { file: "out/24px/sb_h_double_arrow.png",  dx: 0, dy: 0 },
+                "w-resize": { file: "out/24px/left_side.png",  dx: 0, dy: 0 },
+                "e-resize": { file: "out/24px/right_side.png",  dx: 0, dy: 0 },
+                "sw-resize": { file: "out/24px/bottom_left_corner.png",  dx: 0, dy: 0 },
+                "se-resize": { file: "out/24px/bottom_right_corner.png",  dx: 0, dy: 0 },
+                "nw-resize": { file: "out/24px/top_left_corner.png",  dx: 0, dy: 0 },
+                "ne-resize": { file: "out/24px/top_right_corner.png",  dx: 0, dy: 0 },
+                "nesw-resize": { file: "out/24px/fd_double_arrow.png",  dx: 0, dy: 0 },
+                "nwse-resize": { file: "out/24px/bd_double_arrow.png",  dx: 0, dy: 0 },
+                "progress": { file: "out/24px/left_ptr_watch.png",  dx: 0, dy: 0 },
+                "wait": { file: "out/24px/watch.png",  dx: 0, dy: 0 }
+              };
 
-var el = document.getElementsByTagName("*");
+function cursor_log(e){
+    cursor_cur = getStyle(e.target, 'cursor');
 
-for (var i = 0 ; i < el.length ; i++) {
-    el[i].onmouseenter = cursor_log;
+    if (cursor_cur in cursors) {
+        the_ptr.src = cursors[cursor_cur].file;
+        e.target.style.backgroundColor = 'green';
+    }
+    else {
+        the_ptr.src = "out/24px/left_ptr_watch.png"
+    }
+
+    console.log( cursor_cur );
 }
 
 window.onload = function () {
     the_ptr = document.getElementById("the_fakeptr");
+
+    var el = document.getElementsByTagName("*");
+
+    var body = document.getElementsByTagName("body");
+    body = body[0];
+    body.onmouseover = cursor_log;
 }
 </script>
 </html>
