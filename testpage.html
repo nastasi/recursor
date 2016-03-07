@@ -14,6 +14,7 @@ td {
     text-align: center;
 }
 </style>
+<script type="text/javascript" src="recursor.js"></script>
 </head>
 <body>
 <table>
@@ -77,12 +78,10 @@ td {
 <td style="width: 200px; height: 100px; background-color: #f0e0e0; cursor: inherit;">inherit</td>
 </tr>
 </table>
-<img id="the_fakeptr" style="position: absolute; pointer-events: none;" src="out/24px/left_ptr.png">
 </table>
 </body>
 <script>
 
-var the_ptr = null;
 var cursor_cur = "";
 
 function getStyle(el, styleProp) {
@@ -116,15 +115,15 @@ function getStyle(el, styleProp) {
 }
 
 
-document.onmousemove = getMouseXY;
 // Temporary variables to hold mouse x-y pos.s
-var tempX = 0
-var tempY = 0
 
 var IE = false;
 // Main function to retrieve mouse x-y pos.s
 
 function getMouseXY(e) {
+  console.log("getMouseXY");
+  var tempX = 0;
+  var tempY = 0;
   if (IE) { // grab the x-y pos.s if browser is IE
     tempX = event.clientX + document.body.scrollLeft
     tempY = event.clientY + document.body.scrollTop
@@ -138,66 +137,40 @@ function getMouseXY(e) {
   // show the position values in the form named Show
   // in the text fields named MouseX and MouseY
 
-  the_ptr.style.left = (tempX - the_ptr._mop_dx) + "px";
-  the_ptr.style.top = (tempY - the_ptr._mop_dy) + "px";
+  recursor.move(tempX, tempY);
 
   return true
 }
 
-var cursors = { "cell": { file: "out/24px/plus.png",   dx: 11, dy: 11 },
-                "wait": { file: "out/24px/watch.png",  dx: 0, dy: 0 },
-                "not-allowed": { file: "out/24px/crossed_circle.png",  dx: 11, dy: 11 },
-                "text": { file: "out/24px/xterm.png",  dx: 0, dy: 0 },
-                "crosshair": { file: "out/24px/crosshair.png",  dx: 11, dy: 11 },
-                "wait": { file: "out/24px/watch.png",  dx: 11, dy: 11 },
-                "no-drop": { file: "out/24px/circle.png",  dx: 0, dy: 0 },
-                "none": { file: "out/24px/none.png",  dx: 0, dy: 0 },
-                "copy": { file: "out/24px/copy.png",  dx: 0, dy: 0 },
-                "default": { file: "out/24px/left_ptr.png",  dx: 0, dy: 0 },
-                "grabbing": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
-                "all-scroll": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
-                "move": { file: "out/24px/grabbing.png",  dx: 0, dy: 0 },
-                "pointer": { file: "out/24px/hand2.png",  dx: 0, dy: 0 },
-                "help": { file: "out/24px/question_arrow.png",  dx: 0, dy: 0 },
-                "s-resize": { file: "out/24px/bottom_side.png",  dx: 11, dy: 18 },
-                "nw-resize": { file: "out/24px/top_left_corner.png",  dx: 5, dy: 5 },
-                "n-resize": { file: "out/24px/top_side.png",  dx: 12, dy: 5 },
-                "ns-resize": { file: "out/24px/sb_v_double_arrow.png", dx: 11, dy: 11 },
-                "row-resize": { file: "out/24px/sb_v_double_arrow.png",  dx: 0, dy: 0 },
-                "ew-resize": { file: "out/24px/sb_h_double_arrow.png",  dx: 11, dy: 11 },
-                "col-resize": { file: "out/24px/sb_h_double_arrow.png",  dx: 0, dy: 0 },
-                "w-resize": { file: "out/24px/left_side.png",  dx: 7, dy: 13 },
-                "e-resize": { file: "out/24px/right_side.png",  dx: 20, dy: 13 },
-                "sw-resize": { file: "out/24px/bottom_left_corner.png",  dx: 0, dy: 0 },
-                "se-resize": { file: "out/24px/bottom_right_corner.png",  dx: 0, dy: 0 },
-                "ne-resize": { file: "out/24px/top_right_corner.png",  dx: 0, dy: 0 },
-                "nesw-resize": { file: "out/24px/fd_double_arrow.png",  dx: 0, dy: 0 },
-                "nwse-resize": { file: "out/24px/bd_double_arrow.png",  dx: 0, dy: 0 },
-                "progress": { file: "out/24px/left_ptr_watch.png",  dx: 0, dy: 0 },
+var ptrstore_img = null;
+function tdclick_cb()
+{
+    if (ptrstore_img == null) {
+        ptrstore_img = recursor.img_get();
+        recursor.img_set("none");
+    }
+    else {
+        recursor.img_set(ptrstore_img);
+        ptrstore_img = null;
+    }
+}
 
-                "grab": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
-                "vertical-text": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
-                "zoom-in": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
-                "zoom-out": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
-                "context-menu": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
-                "alias": { file: "out/24px/todo.png",  dx: 0, dy: 0 },
 
-              };
-
-function cursor_log(e){
-    cursor_cur = getStyle(e.target, 'cursor');
-    if (cursor_cur == 'auto')
+function mouseover_cb(e){
+    console.log("mouseover_cb");
+    name_cur = getStyle(e.target, 'cursor');
+    if (name_cur == 'auto')
         return;
 
-    if (cursor_cur in cursors) {
-        ptr_store = null;
-        the_ptr.src = cursors[cursor_cur].file;
-        the_ptr._mop_dx = cursors[cursor_cur].dx;
-        the_ptr._mop_dy = cursors[cursor_cur].dy;
-        if (cursors[cursor_cur].dx != 0 || cursors[cursor_cur].dy != 0)
+    if (name_cur in Recursor.cursors) {
+        ptrstore_img = null;
+        recursor.img_set(name_cur);
+
+        if (Recursor.cursors[name_cur].dx != 0 || Recursor.cursors[name_cur].dy != 0)
             e.target.style.backgroundColor = 'green';
         else {
-            if (cursors[cursor_cur].file == "out/24px/todo.png") {
+              console.log('zz:' + recursor.src_get());
+            if (recursor.src_get() == "out/24px/todo.png") {
                 e.target.style.backgroundColor = 'red';
             }
             else {
@@ -206,39 +179,28 @@ function cursor_log(e){
         }
     }
     else {
-        the_ptr.src = "out/24px/left_ptr_watch.png"
-        ptr_store = null;
+        recursor.img_set("progress");
+        ptrstore_img = null;
     }
 
-    console.log( cursor_cur );
+    console.log( name_cur );
 }
 
-var ptr_store = null;
-function tdclick_cb()
-{
-    if (ptr_store == null) {
-        ptr_store = the_ptr.src;
-        the_ptr.src = "out/24px/none.png"
-    }
-    else {
-        the_ptr.src = ptr_store;
-        ptr_store = null;
-    }
-}
 
+
+var recursor = null;
 window.onload = function () {
-    the_ptr = document.getElementById("the_fakeptr");
-    // TODO: initialization
-    the_ptr._mop_dx = 0;
-    the_ptr._mop_dy = 0;
 
     var body = document.getElementsByTagName("body");
     body = body[0];
-    body.onmouseover = cursor_log;
+    body.onmouseover = mouseover_cb;
+
+    document.onmousemove = getMouseXY;
+    recursor = new Recursor(0, 0, "none");
+    console.log(recursor);
     var tds = document.getElementsByTagName('td');
 
     for(var i = 0 ; i < tds.length ; i++) {
-        console.log("loop");
         tds[i].onclick = tdclick_cb;
     }
 }
